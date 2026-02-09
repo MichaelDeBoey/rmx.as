@@ -1,0 +1,4 @@
+# Exclude everything except _redirects (used for Worker redirect rules)
+*
+.*
+!_redirects

@@ -1,14 +1,16 @@
 {
   "name": "rmx.as",
   "type": "module",
-  "description": "Personal URL shortener powered by Netlify.",
+  "description": "Personal URL shortener powered by Cloudflare Workers.",
   "engines": {
     "node": "24"
   },
   "scripts": {
-    "format": "node scripts/format.ts"
+    "format": "node scripts/format.ts",
+    "deploy": "wrangler deploy"
   },
   "devDependencies": {
-    "@types/node": "^24"
+    "@types/node": "^24",
+    "wrangler": "^4.64.0"
   }
 }

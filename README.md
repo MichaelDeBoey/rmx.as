@@ -1,10 +1,11 @@
 # rmx.as
 
-Short URLs for rmx.as, powered by Netlify.
+Short URLs for rmx.as, powered by Cloudflare Workers.
 
 ## How it works
 
 - **`_redirects`** – Defines all redirect rules. One rule per line: `from to [status]`
+- **Cloudflare Workers** – Serves redirects at the edge via static assets
 
 ### Format
 
