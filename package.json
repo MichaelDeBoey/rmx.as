@@ -1,27 +1,14 @@
 {
   "name": "rmx.as",
-  "baseUrl": "https://rmx.as",
-  "private": true,
-  "version": "1.0.0",
-  "description": "Uses netlify's redirect functionality to make a personal URL shortener. Works beautifully :)",
-  "scripts": {
-    "shorten": "netlify-shortener"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/remix-run/rmx.as.git"
-  },
-  "keywords": [],
-  "author": "Kent C. Dodds <kent@remix.run> (https://remix.run/)",
-  "license": "MIT",
+  "type": "module",
+  "description": "Personal URL shortener powered by Netlify.",
   "engines": {
     "node": "24"
   },
-  "bugs": {
-    "url": "https://github.com/remix-run/rmx.as/issues"
+  "scripts": {
+    "format": "node scripts/format.ts"
   },
-  "homepage": "https://github.com/remix-run/rmx.as#readme",
   "devDependencies": {
-    "netlify-shortener": "^2.4.0"
+    "@types/node": "^24"
   }
 }
