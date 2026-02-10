@@ -9,13 +9,10 @@ Short URLs for rmx.as, powered by Cloudflare Workers.
 
 ### Format
 
-| Syntax            | Example                                    |
-| ----------------- | ------------------------------------------ |
-| Static            | `/path      https://destination.com`       |
-| Catch-all (splat) | `/blog/*    https://remix.run/blog/:splat` |
-| With status       | `/old       /new    301`                   |
-
-The `:splat` placeholder captures whatever the `*` matches. So `/blog/2024/my-post` redirects to `https://remix.run/blog/2024/my-post`.
+| Syntax      | Example                            |
+| ----------- | ---------------------------------- |
+| Static      | `/path    https://destination.com` |
+| With status | `/old     /new    301`             |
 
 **Reference:** [Cloudflare Workers Redirects](https://developers.cloudflare.com/workers/static-assets/redirects/)
 

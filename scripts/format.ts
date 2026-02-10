@@ -15,16 +15,12 @@ interface Entry {
 }
 
 const isCatchAll = (path: string) => path === "/*" || path === "/";
-const isDynamic = (path: string) =>
-  path.includes("*") || path.includes(":") || isCatchAll(path);
 
 function parseRedirects(contents: string): {
-  static: Entry[];
-  dynamic: Entry[];
+  entries: Entry[];
   catchAll: Entry | null;
 } {
-  const staticEntries: Entry[] = [];
-  const dynamicEntries: Entry[] = [];
+  const entries: Entry[] = [];
   let catchAll: Entry | null = null;
 
   for (const line of contents.split("\n")) {
@@ -37,29 +33,18 @@ function parseRedirects(contents: string): {
     const [, path, destination] = match;
     if (isCatchAll(path)) {
       catchAll = { path, destination };
-    } else if (isDynamic(path)) {
-      dynamicEntries.push({ path, destination });
     } else {
-      staticEntries.push({ path, destination });
+      entries.push({ path, destination });
     }
   }
 
-  return { static: staticEntries, dynamic: dynamicEntries, catchAll };
+  return { entries, catchAll };
 }
 
-function formatRedirects(
-  staticEntries: Entry[],
-  dynamicEntries: Entry[],
-  catchAll: Entry | null,
-): string {
-  staticEntries.sort((a, b) =>
+function formatRedirects(entries: Entry[], catchAll: Entry | null): string {
+  entries.sort((a, b) =>
     a.path.localeCompare(b.path, undefined, { sensitivity: "base" }),
   );
-  dynamicEntries.sort((a, b) =>
-    a.path.localeCompare(b.path, undefined, { sensitivity: "base" }),
-  );
-
-  const entries = [...staticEntries, ...dynamicEntries];
 
   const longest = Math.max(
     0,
@@ -76,11 +61,9 @@ function formatRedirects(
   return lines.join("\n") + "\n\n";
 }
 
-const { static: staticEntries, dynamic: dynamicEntries, catchAll } =
-  parseRedirects(readFileSync(REDIRECTS_PATH, "utf8"));
-
-writeFileSync(
-  REDIRECTS_PATH,
-  formatRedirects(staticEntries, dynamicEntries, catchAll),
+const { entries, catchAll } = parseRedirects(
+  readFileSync(REDIRECTS_PATH, "utf8"),
 );
+
+writeFileSync(REDIRECTS_PATH, formatRedirects(entries, catchAll));
 console.log("Formatted _redirects");
