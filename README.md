@@ -17,7 +17,7 @@ Short URLs for rmx.as, powered by Cloudflare Workers.
 
 The `:splat` placeholder captures whatever the `*` matches. So `/blog/2024/my-post` redirects to `https://remix.run/blog/2024/my-post`.
 
-**Reference:** [Cloudflare Pages Redirects](https://developers.cloudflare.com/pages/configuration/redirects/)
+**Reference:** [Cloudflare Workers Redirects](https://developers.cloudflare.com/workers/static-assets/redirects/)
 
 ## Deploying
 

@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const PADDING = 5;
+const PADDING = 10;
 const REDIRECTS_PATH = join(
   dirname(fileURLToPath(import.meta.url)),
   "..",
@@ -15,12 +15,16 @@ interface Entry {
 }
 
 const isCatchAll = (path: string) => path === "/*" || path === "/";
+const isDynamic = (path: string) =>
+  path.includes("*") || path.includes(":") || isCatchAll(path);
 
 function parseRedirects(contents: string): {
-  entries: Entry[];
+  static: Entry[];
+  dynamic: Entry[];
   catchAll: Entry | null;
 } {
-  const entries: Entry[] = [];
+  const staticEntries: Entry[] = [];
+  const dynamicEntries: Entry[] = [];
   let catchAll: Entry | null = null;
 
   for (const line of contents.split("\n")) {
@@ -33,18 +37,29 @@ function parseRedirects(contents: string): {
     const [, path, destination] = match;
     if (isCatchAll(path)) {
       catchAll = { path, destination };
+    } else if (isDynamic(path)) {
+      dynamicEntries.push({ path, destination });
     } else {
-      entries.push({ path, destination });
+      staticEntries.push({ path, destination });
     }
   }
 
-  return { entries, catchAll };
+  return { static: staticEntries, dynamic: dynamicEntries, catchAll };
 }
 
-function formatRedirects(entries: Entry[], catchAll: Entry | null): string {
-  entries.sort((a, b) =>
+function formatRedirects(
+  staticEntries: Entry[],
+  dynamicEntries: Entry[],
+  catchAll: Entry | null,
+): string {
+  staticEntries.sort((a, b) =>
     a.path.localeCompare(b.path, undefined, { sensitivity: "base" }),
   );
+  dynamicEntries.sort((a, b) =>
+    a.path.localeCompare(b.path, undefined, { sensitivity: "base" }),
+  );
+
+  const entries = [...staticEntries, ...dynamicEntries];
 
   const longest = Math.max(
     0,
@@ -61,9 +76,11 @@ function formatRedirects(entries: Entry[], catchAll: Entry | null): string {
   return lines.join("\n") + "\n\n";
 }
 
-const { entries, catchAll } = parseRedirects(
-  readFileSync(REDIRECTS_PATH, "utf8"),
-);
+const { static: staticEntries, dynamic: dynamicEntries, catchAll } =
+  parseRedirects(readFileSync(REDIRECTS_PATH, "utf8"));
 
-writeFileSync(REDIRECTS_PATH, formatRedirects(entries, catchAll));
+writeFileSync(
+  REDIRECTS_PATH,
+  formatRedirects(staticEntries, dynamicEntries, catchAll),
+);
 console.log("Formatted _redirects");
